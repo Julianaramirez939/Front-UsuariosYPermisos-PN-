@@ -1,0 +1,91 @@
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  padding: 1rem;
+}
+
+.register-logo {
+  width: 260px;
+  height: 260px;
+  margin-bottom: 1rem;
+}
+
+.register-title {
+  color: #374151;
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.register-form {
+  width: 100%;
+  max-width: 400px;
+  background: #f5f5f5;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.register-label {
+  color: #374151;
+  font-family: Arial, sans-serif;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.register-input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.register-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.btn-register-submit {
+  width: fit-content;
+  min-width: 140px;
+  display: block;
+  margin: 0 auto 1rem auto;
+  padding: 0.75rem 1.5rem;
+  background-color: #162663;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-register-submit:hover {
+  background-color: #1e3a8a;
+}
+
+.back-to-login {
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.back-to-login a {
+  text-decoration: none;
+  cursor: pointer;
+  color: #1e3a8a;
+}
+
+.back-to-login a:hover {
+  text-decoration: underline;
+}

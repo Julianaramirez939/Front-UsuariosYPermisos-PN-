@@ -1,0 +1,90 @@
+/* RecuperarContrasena.css */
+.forgot-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  padding: 1rem;
+  gap: 2rem; /* separación entre logo y contenido */
+}
+
+.forgot-logo {
+  width: 260px; /* triple del tamaño original */
+  height: 260px;
+  margin-bottom: 1rem;
+}
+
+.forgot-content {
+  max-width: 400px;
+  width: 100%;
+}
+
+.forgot-title {
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-family: Arial, sans-serif;
+  color: #374151;
+  text-align: center; 
+  margin-bottom: 2rem;
+}
+
+.forgot-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+  color: #374151;
+}
+
+.forgot-input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: Arial, sans-serif;
+}
+
+.forgot-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.btn-send {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  background-color: #162663;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  /* Limita el ancho del botón */
+  width: fit-content;
+  min-width: 120px;
+  margin: 0 auto; /* centra horizontalmente */
+  display: block;
+}
+
+.btn-send:hover {
+  background-color: #1e3a8a;
+}
+
+.back-to-login {
+  display: block;
+  margin-top: 1rem;
+  text-align: center;
+  color: #1e3a8a;
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.back-to-login:hover {
+  text-decoration: underline;
+}
