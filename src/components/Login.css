@@ -111,3 +111,17 @@
 .forgot-password a:hover {
   text-decoration: underline;
 }
+.show-password-checkbox {
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  margin-top: -1rem;
+  margin-bottom: 1rem;
+  color: #374151;
+  font-family: Arial, sans-serif;
+}
+
+.show-password-checkbox input {
+  margin-right: 0.5rem;
+  cursor: pointer;
+}

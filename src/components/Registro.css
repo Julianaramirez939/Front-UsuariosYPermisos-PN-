@@ -89,3 +89,27 @@
 .back-to-login a:hover {
   text-decoration: underline;
 }
+.input-error {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.875rem;
+  margin: 0.25rem 0 1rem 0;
+  font-family: Arial, sans-serif;
+}
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: #374151;
+  font-family: Arial, sans-serif;
+}
+
+.checkbox-container input[type="checkbox"] {
+  margin-right: 0.5rem;
+  accent-color: #2563eb;
+}
