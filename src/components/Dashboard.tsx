@@ -1,4 +1,3 @@
-// src/pages/Dashboard.tsx
 import "./Dashboard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,22 +8,25 @@ import {
   faCircleUser,
   faUser as faUserRegular,
 } from "@fortawesome/free-regular-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+
   return (
     <div className="dashboard-container">
       <aside className="dashboard-sidebar">
         <nav className="sidebar-menu">
           <ul>
-            <li>
+            <li onClick={() => navigate("/horarios")}>
               <FontAwesomeIcon icon={faCalendar} className="sidebar-icon" />
               <span>Ver Horarios</span>
             </li>
-            <li>
+            <li onClick={() => navigate("/roles")}>
               <FontAwesomeIcon icon={faUsers} className="sidebar-icon" />
               <span>Roles</span>
             </li>
-            <li>
+            <li onClick={() => navigate("/usuarios")}>
               <FontAwesomeIcon icon={faUserRegular} className="sidebar-icon" />
               <span>Usuarios</span>
             </li>
@@ -37,7 +39,7 @@ export default function Dashboard() {
           <div className="header-role">Administración</div>
           <div className="header-user">
             <FontAwesomeIcon icon={faCircleUser} className="user-icon" />
-            <span>Santiago Rincon</span>
+            <span>Santiago Rincón</span>
           </div>
         </header>
 

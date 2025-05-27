@@ -1,0 +1,78 @@
+.perfil-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+}
+
+.perfil-form {
+  width: 100%;
+  max-width: 500px;
+  background: #f5f5f5;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.perfil-container h1 {
+  font-size: 1.75rem;
+  margin-bottom: 2rem;
+  color: #374151;
+  font-weight: 400;
+}
+
+.perfil-group {
+  margin-bottom: 1.5rem;
+}
+
+.perfil-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #374151;
+  font-weight: 400;
+}
+
+.perfil-group input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.perfil-group input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.perfil-group input:disabled {
+  background-color: #e5e7eb;
+  color: #6b7280;
+}
+
+.perfil-actions {
+  text-align: center;
+}
+
+.perfil-actions button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #162663;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.perfil-actions button:hover {
+  background-color: #1e3a8a;
+}
