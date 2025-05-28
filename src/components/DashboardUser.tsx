@@ -4,10 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faBars } from "@fortawesome/free-solid-svg-icons";
 import "./Dashboard.css";
 
-import { getUsers, deleteUser } from "../services/userService";
+import { getUsers, deleteUser, createUser } from "../services/userService";
 import { getRoles } from "../services/roleService";
-import type { User } from "../interfaces/User";
+import type { User, NewUser } from "../interfaces/User";
 import type { Role } from "../interfaces/Role";
+
+// Fix de estilos para evitar que Swal quede debajo del modal
+Swal.mixin({ heightAuto: false });
 
 export default function DashboardUser() {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -17,20 +20,23 @@ export default function DashboardUser() {
 
   const estados = ["Activo", "Inactivo"];
 
+  const initialFormData = {
+    nombre: "",
+    correo: "",
+    rol: "",
+    estado: "Activo",
+    password: "",
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
+
   useEffect(() => {
     async function fetchData() {
       try {
         const usersFromAPI = await getUsers();
         const rolesFromAPI = await getRoles();
-
         setRoles(rolesFromAPI);
-
-        const mappedUsers = usersFromAPI.map((u) => ({
-          ...u,
-          estado: "Activo",
-        }));
-
-        setUsuarios(mappedUsers);
+        setUsuarios(usersFromAPI.map((u) => ({ ...u, estado: "Activo" })));
       } catch (error) {
         console.error("Error al cargar datos:", error);
       }
@@ -43,36 +49,93 @@ export default function DashboardUser() {
     setOpenMenuId(openMenuId === id ? null : id);
   };
 
-  const [formData, setFormData] = useState({
-    nombre: "",
-    correo: "",
-    rol: "",
-    estado: "Activo",
-  });
-
-  useEffect(() => {
-    if (roles.length > 0 && !formData.rol) {
-      setFormData((prev) => ({ ...prev, rol: roles[0].name }));
-    }
-  }, [roles]);
-
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    const newValue =
+      type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: newValue,
+    }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const isValidEmail = (email: string) =>
+    /@(cue\.edu\.co|unihumboldt\.co)$/.test(email);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Datos del formulario:", formData);
-    setShowModal(false);
+    const { nombre, correo, password } = formData;
+
+    if (!isValidEmail(correo)) {
+      Swal.fire(
+        "Error",
+        "El correo debe terminar en @cue.edu.co o @unihumboldt.co",
+        "error"
+      );
+      return;
+    }
+
+    const usuarioExistente = usuarios.some(
+      (u) => u.email === correo || u.username === nombre
+    );
+
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
+
+    if (usuarioExistente) {
+      Swal.fire(
+        "Error",
+        "Ya existe un usuario con ese nombre o correo.",
+        "error"
+      );
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      Swal.fire(
+        "Error",
+        "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.",
+        "error"
+      );
+      return;
+    }
+
+    const selectedRole = roles.find((r) => r.name === formData.rol);
+    if (!selectedRole) {
+      Swal.fire("Error", "Rol seleccionado no válido.", "error");
+      return;
+    }
+
+    try {
+      const newUserData: NewUser = {
+        username: nombre,
+        email: correo,
+        password,
+        role: selectedRole,
+      };
+
+      const newUser = await createUser(newUserData);
+
+      Swal.fire("Éxito", "Usuario creado exitosamente", "success");
+
+      setUsuarios((prev) => [...prev, { ...newUser, estado: formData.estado }]);
+      setShowModal(false);
+      setFormData(initialFormData);
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "No se pudo crear el usuario.", "error");
+    }
+  };
+
+  const handleOpenModal = () => {
     setFormData({
-      nombre: "",
-      correo: "",
+      ...initialFormData,
       rol: roles.length > 0 ? roles[0].name : "",
-      estado: "Activo",
     });
+    setShowModal(true);
   };
 
   const handleDelete = async (id: string) => {
@@ -92,16 +155,15 @@ export default function DashboardUser() {
         await deleteUser(id);
         Swal.fire("Eliminado!", "El usuario ha sido eliminado.", "success");
         setUsuarios((prev) => prev.filter((user) => user.id !== id));
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          Swal.fire(
-            "Error",
-            `Error al cargar datos: ${error.message}`,
-            "error"
-          );
-        } else {
-          Swal.fire("Error", "Error inesperado al cargar datos.", "error");
-        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Error desconocido";
+        Swal.fire(
+          "Error",
+          `Error al eliminar el usuario: ${errorMessage}`,
+          "error"
+        );
+        console.error("Error al eliminar el usuario:", error);
       }
     }
   };
@@ -113,10 +175,7 @@ export default function DashboardUser() {
           <h1 className="roles-title">Usuarios</h1>
 
           <div className="roles-toolbar">
-            <button
-              className="btn-crear-rol"
-              onClick={() => setShowModal(true)}
-            >
+            <button className="btn-crear-rol" onClick={handleOpenModal}>
               <FontAwesomeIcon icon={faPlus} style={{ marginRight: "8px" }} />
               Crear Usuario
             </button>
@@ -149,6 +208,7 @@ export default function DashboardUser() {
                       </button>
                       {openMenuId === user.id && (
                         <div className="menu-dropdown">
+                          <button className="btn-accion">Ver contraseña</button>{" "}
                           <button className="btn-accion editar">Editar</button>
                           <button
                             className="btn-accion eliminar"
@@ -224,6 +284,18 @@ export default function DashboardUser() {
                         </option>
                       ))}
                     </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="password">Contraseña:</label>
+                    <input
+                      id="password"
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
 
                   <div className="modal-buttons">

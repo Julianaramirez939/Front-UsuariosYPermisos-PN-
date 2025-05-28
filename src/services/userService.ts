@@ -1,4 +1,4 @@
-import type { User } from "../interfaces/User";
+import type { NewUser, User } from "../interfaces/User";
 
 const API_BASE = "http://localhost:8080/api";
 
@@ -44,8 +44,9 @@ export async function getUserById(id: string): Promise<User> {
   return response.json();
 }
 
-export async function createUser(user: User): Promise<User> {
+export async function createUser(user: NewUser): Promise<User> {
   const token = getToken();
+    console.log("Datos enviados para crear usuario:", user);
 
   const response = await fetch(`${API_BASE}/users`, {
     method: "POST",

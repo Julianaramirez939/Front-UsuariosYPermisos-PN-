@@ -303,3 +303,6 @@
 .btn-guardar:hover {
   background-color: #45a049; /* verde un poco más oscuro */
 }
+.swal2-container {
+  z-index: 10000 !important;
+}
