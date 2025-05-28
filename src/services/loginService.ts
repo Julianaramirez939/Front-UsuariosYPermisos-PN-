@@ -1,4 +1,3 @@
-
 export async function loginUser(data: {
   username: string;
   password: string;
@@ -14,5 +13,12 @@ export async function loginUser(data: {
     throw new Error(error.message || "No se pudo iniciar sesión");
   }
 
-  return response.json(); // Devuelve token, usuario, etc.
+  const result = await response.json();
+
+  // Guardar token en sessionStorage
+  if (result.token) {
+    sessionStorage.setItem("token", result.token);
+  }
+
+  return result;
 }

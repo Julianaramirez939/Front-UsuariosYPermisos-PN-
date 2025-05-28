@@ -14,10 +14,14 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/recuperar" element={<RecuperarContraseña />} />
         <Route path="/registro" element={<Registro />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/roles" element={<DashboardRole />} />
-        <Route path="/usuarios" element={<DashboardUser />} />
-        <Route path="/miperfil" element={<MiPerfil />} />
+
+        {/* Rutas anidadas dentro de Dashboard */}
+        <Route path="/Dashboard" element={<Dashboard />}>
+          <Route index element={<h1>Bienvenido al panel de administración</h1>} />
+          <Route path="roles" element={<DashboardRole />} />
+          <Route path="usuarios" element={<DashboardUser />} />
+          <Route path="miperfil" element={<MiPerfil />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
