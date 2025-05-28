@@ -44,14 +44,16 @@ export default function DashboardRole() {
   };
 
   const handleEliminar = async (role: Role) => {
-    const result = await Swal.fire({
-      title: "¿Estás seguro de eliminar este rol?",
-      text: role.name,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    });
+    const result =await Swal.fire({
+          title: "¿Estás seguro de eliminar este rol?",
+          text: "No podrás revertir esta acción.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Sí, eliminar",
+          cancelButtonText: "Cancelar",
+        });
 
     if (!result.isConfirmed) return;
 

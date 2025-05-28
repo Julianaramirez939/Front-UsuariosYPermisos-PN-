@@ -1,9 +1,11 @@
 import { useState, useEffect, type ChangeEvent, type FormEvent } from "react";
+import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faBars } from "@fortawesome/free-solid-svg-icons";
 import "./Dashboard.css";
 
-import { getUsers } from "../services/userService";
+import { getUsers, deleteUser } from "../services/userService";
+import { getRoles } from "../services/roleService";
 import type { User } from "../interfaces/User";
 import type { Role } from "../interfaces/Role";
 
@@ -11,21 +13,18 @@ export default function DashboardUser() {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [usuarios, setUsuarios] = useState<(User & { estado: string })[]>([]);
-
-  // Roles fijos (puedes cargarlos desde un servicio si quieres)
-  const roles: Role[] = [
-    { id: "1", name: "Administrador", description: "", permissions: [] },
-    { id: "2", name: "Usuario", description: "", permissions: [] },
-  ];
+  const [roles, setRoles] = useState<Role[]>([]);
 
   const estados = ["Activo", "Inactivo"];
 
   useEffect(() => {
-    async function fetchUsers() {
+    async function fetchData() {
       try {
         const usersFromAPI = await getUsers();
+        const rolesFromAPI = await getRoles();
 
-        // Agregamos estado por defecto "Activo" a cada usuario
+        setRoles(rolesFromAPI);
+
         const mappedUsers = usersFromAPI.map((u) => ({
           ...u,
           estado: "Activo",
@@ -33,11 +32,11 @@ export default function DashboardUser() {
 
         setUsuarios(mappedUsers);
       } catch (error) {
-        console.error("Error al cargar usuarios:", error);
+        console.error("Error al cargar datos:", error);
       }
     }
 
-    fetchUsers();
+    fetchData();
   }, []);
 
   const toggleMenu = (id: string) => {
@@ -47,9 +46,15 @@ export default function DashboardUser() {
   const [formData, setFormData] = useState({
     nombre: "",
     correo: "",
-    rol: roles[0].name,
-    estado: "Activo", // Estado por defecto al crear nuevo usuario
+    rol: "",
+    estado: "Activo",
   });
+
+  useEffect(() => {
+    if (roles.length > 0 && !formData.rol) {
+      setFormData((prev) => ({ ...prev, rol: roles[0].name }));
+    }
+  }, [roles]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -65,14 +70,45 @@ export default function DashboardUser() {
     setFormData({
       nombre: "",
       correo: "",
-      rol: roles[0].name,
+      rol: roles.length > 0 ? roles[0].name : "",
       estado: "Activo",
     });
   };
 
+  const handleDelete = async (id: string) => {
+    const result = await Swal.fire({
+      title: "¿Estás seguro de eliminar este usuario?",
+      text: "No podrás revertir esta acción.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteUser(id);
+        Swal.fire("Eliminado!", "El usuario ha sido eliminado.", "success");
+        setUsuarios((prev) => prev.filter((user) => user.id !== id));
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          Swal.fire(
+            "Error",
+            `Error al cargar datos: ${error.message}`,
+            "error"
+          );
+        } else {
+          Swal.fire("Error", "Error inesperado al cargar datos.", "error");
+        }
+      }
+    }
+  };
+
   return (
     <div className="dashboard-container">
-      <main className="dashboard-main" >
+      <main className="dashboard-main">
         <section>
           <h1 className="roles-title">Usuarios</h1>
 
@@ -114,7 +150,10 @@ export default function DashboardUser() {
                       {openMenuId === user.id && (
                         <div className="menu-dropdown">
                           <button className="btn-accion editar">Editar</button>
-                          <button className="btn-accion eliminar">
+                          <button
+                            className="btn-accion eliminar"
+                            onClick={() => handleDelete(user.id)}
+                          >
                             Eliminar
                           </button>
                         </div>
